@@ -1,4 +1,4 @@
-package Backend;
+package Backend.Entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import java.util.Objects;
 
 @Entity
-class Performance {
+public class Performance {
 
     @Id @GeneratedValue
     private Long id;
@@ -30,7 +30,7 @@ class Performance {
         return this.name;
     }
 
-    public String getRole() {
+    public String getGenre() {
         return this.genre;
     }
 
@@ -42,7 +42,7 @@ class Performance {
         this.name = name;
     }
 
-    public void setRole(String role) {
+    public void setGenre(String role) {
         this.genre = role;
     }
 
