@@ -31,18 +31,16 @@ public class BackendNewApplication implements CommandLineRunner {
         performanceRepository.save(new Performance("Fuizenfest", "Metal"));
         performanceRepository.save(new Performance("Underground", "Rap"));
 
-
         for (DJ dj : djRepository.findAll()){
-            System.out.println("DJ ID: " + dj.getId()
-            + ", DJ name: " + dj.getName()
-            + ", DJ genre: " + dj.getGenre());
+            System.out.println(dj.getId() + " "
+                    + dj.getName() + " "
+                    + dj.getGenre());
         }
 
         for (Performance performance : performanceRepository.findAll()){
-            System.out.println("Performance ID: " + performance.getId()
-                    + ", Performance name: " + performance.getName()
-                    + ", Performance genre: " + performance.getGenre());
+            System.out.println(performance.getId() + " "
+                    + performance.getName() + " "
+                    + performance.getGenre());
         }
-
     }
 }

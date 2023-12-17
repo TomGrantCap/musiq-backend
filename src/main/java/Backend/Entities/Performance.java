@@ -42,12 +42,12 @@ public class Performance {
         this.name = name;
     }
 
-    public void setGenre(String role) {
-        this.genre = role;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
-    @Override
-    public String toString() {
-        return "DJ {" + "id=" + this.id + ", name='" + this.name + '\'' + ", genre='" + this.genre + '\'' + '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "DJ {" + "id=" + this.id + ", name='" + this.name + '\'' + ", genre='" + this.genre + '\'' + '}';
+//    }
 }

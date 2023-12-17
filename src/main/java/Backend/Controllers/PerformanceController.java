@@ -17,11 +17,19 @@ public class PerformanceController {
     List<Performance> performances(){
         return performanceRepository.findAll();
     }
-    @GetMapping("/performances/{id}")
+    @GetMapping("/performances/id/{id}")
     Optional<Performance> performance(@PathVariable Long id) {
-
         return performanceRepository.findById(id);
     }
+    @GetMapping("/performances/genre/{genre}")
+    Optional<Performance> performanceGenre(@PathVariable String genre) {
+        return Optional.ofNullable(performanceRepository.findPerformancesByGenreEqualsIgnoreCase(genre));
+    }
+    @GetMapping("/performances/name/{name}")
+    Optional<Performance> performanceName(@PathVariable String name) {
+        return Optional.ofNullable(performanceRepository.findPerformancesByNameEqualsIgnoreCase(name));
+    }
+
     @PostMapping("/performances")
     Performance performance(@RequestBody Performance performance) {
         return performanceRepository.save(performance);

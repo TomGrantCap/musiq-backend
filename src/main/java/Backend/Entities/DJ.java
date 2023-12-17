@@ -46,8 +46,8 @@ public class DJ {
         this.genre = role;
     }
 
-    @Override
-    public String toString() {
-        return "DJ {" + "id=" + this.id + ", name='" + this.name + '\'' + ", genre='" + this.genre + '\'' + '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "DJ {" + "id=" + this.id + ", name='" + this.name + '\'' + ", genre='" + this.genre + '\'' + '}';
+//    }
 }
