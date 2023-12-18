@@ -18,9 +18,9 @@ public class DJController {
     List<DJ> djs(){
         return djRepository.findAll();
     }
+
     @GetMapping("/djs/id/{id}")
     Optional<DJ> dj(@PathVariable Long id) {
-
         return djRepository.findById(id);
 }
     @GetMapping("/djs/genre/{genre}")
@@ -28,13 +28,14 @@ public class DJController {
         return Optional.ofNullable(djRepository.findDJsByGenreEqualsIgnoreCase(genre));
     }
 
-    @GetMapping("/djs/length/{string}")
-    Optional<DJ> DJLength(@PathVariable String string) {
-        return Optional.ofNullable(djRepository.findDJByNameIsGreaterThan(string));
-    }
     @GetMapping("/djs/name/{name}")
     Optional<DJ> DJName(@PathVariable String name) {
         return Optional.ofNullable(djRepository.findDJsByNameEqualsIgnoreCase(name));
+    }
+
+    @GetMapping("/djs/length/{length}")
+    List<DJ> DJLength(@PathVariable int length) {
+        return djRepository.findDJIfNameLongerThan(length);
     }
 
     @PostMapping("/djs")

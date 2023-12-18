@@ -21,15 +21,19 @@ public class BackendNewApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
-        djRepository.save(new DJ("Macklemore", "Pop"));
-        djRepository.save(new DJ("Jay-Z", "Rap"));
-        djRepository.save(new DJ("Korn", "Metal"));
+        DJ dj1 = new DJ("Macklemore", "Pop");
+        DJ dj2 = new DJ("Jay-Z", "Rap");
+        DJ dj3 = new DJ("Korn", "Metal");
 
-        performanceRepository.save(new Performance("Glastonbury", "Pop"));
-        performanceRepository.save(new Performance("Fuizenfest", "Metal"));
-        performanceRepository.save(new Performance("Underground", "Rap"));
+        djRepository.save(dj1);
+        djRepository.save(dj2);
+        djRepository.save(dj3);
+
+        performanceRepository.save(new Performance(dj3,"Glastonbury", "Pop"));
+        performanceRepository.save(new Performance(dj1,"Fuizenfest", "Metal"));
+        performanceRepository.save(new Performance(dj2,"Underground", "Rap"));
 
         for (DJ dj : djRepository.findAll()){
             System.out.println(dj.getId() + " "
@@ -42,5 +46,6 @@ public class BackendNewApplication implements CommandLineRunner {
                     + performance.getName() + " "
                     + performance.getGenre());
         }
+
     }
 }
