@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DJRepository extends JpaRepository<DJ, Long> {
 
-    DJ findDJsByGenreEqualsIgnoreCase(String genre);
-    DJ findDJsByNameEqualsIgnoreCase(String name);
+    Iterable<DJ> findDJsByGenreEqualsIgnoreCase(String genre);
+    Iterable<DJ> findDJsByNameEqualsIgnoreCase(String name);
+
+    Iterable<DJ> findByNameEqualsIgnoreCaseAndGenreEqualsIgnoreCase(String name, String genre);
 
     default List<DJ> findDJIfNameLongerThan(int length){
         List<DJ> djList = new ArrayList<DJ>();

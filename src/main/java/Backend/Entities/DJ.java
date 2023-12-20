@@ -2,14 +2,17 @@ package Backend.Entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.util.Objects;
 
 @Entity
+
 public class DJ {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String genre;
@@ -43,11 +46,7 @@ public class DJ {
     }
 
     public void setGenre(String role) {
-        this.genre = role;
+        this.genre = genre;
     }
 
-//    @Override
-//    public String toString() {
-//        return "DJ {" + "id=" + this.id + ", name='" + this.name + '\'' + ", genre='" + this.genre + '\'' + '}';
-//    }
 }

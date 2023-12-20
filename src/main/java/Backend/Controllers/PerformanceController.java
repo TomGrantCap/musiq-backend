@@ -1,4 +1,5 @@
 package Backend.Controllers;
+import Backend.Entities.DJ;
 import Backend.Entities.Performance;
 import Backend.Repositories.PerformanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,25 +14,44 @@ public class PerformanceController {
     @Autowired
     private PerformanceRepository performanceRepository;
 
-    @GetMapping("/performances")    //Get all DJs in DJ repository
-    List<Performance> performances(){
-        return performanceRepository.findAll();
-    }
-    @GetMapping("/performances/id/{id}")
-    Optional<Performance> performance(@PathVariable Long id) {
-        return performanceRepository.findById(id);
-    }
-    @GetMapping("/performances/genre/{genre}")
-    Optional<Performance> performanceGenre(@PathVariable String genre) {
-        return Optional.ofNullable(performanceRepository.findPerformancesByGenreEqualsIgnoreCase(genre));
-    }
-    @GetMapping("/performances/name/{name}")
-    Optional<Performance> performanceName(@PathVariable String name) {
-        return Optional.ofNullable(performanceRepository.findPerformancesByNameEqualsIgnoreCase(name));
-    }
-
     @PostMapping("/performances")
-    Performance performance(@RequestBody Performance performance) {
+    Performance create(@RequestBody Performance performance){
         return performanceRepository.save(performance);
     }
+    @GetMapping("/performances")
+    Iterable<Performance> read(){
+        return performanceRepository.findAll();
+    }
+
+    @PutMapping("/performances")
+    Performance update(@RequestBody Performance performance) {
+        return performanceRepository.save(performance);
+    }
+    @DeleteMapping("/performances/{id}")
+    void delete(@PathVariable Long id){
+        performanceRepository.deleteById(id);
+    }
+
 }
+
+//    @GetMapping("/performances")    //Get all DJs in DJ repository
+//    List<Performance> performances(){
+//        return performanceRepository.findAll();
+//    }
+//    @GetMapping("/performances/id/{id}")
+//    Optional<Performance> performance(@PathVariable Long id) {
+//        return performanceRepository.findById(id);
+//    }
+//    @GetMapping("/performances/genre/{genre}")
+//    Optional<Performance> performanceGenre(@PathVariable String genre) {
+//        return Optional.ofNullable(performanceRepository.findPerformancesByGenreEqualsIgnoreCase(genre));
+//    }
+//    @GetMapping("/performances/name/{name}")
+//    Optional<Performance> performanceName(@PathVariable String name) {
+//        return Optional.ofNullable(performanceRepository.findPerformancesByNameEqualsIgnoreCase(name));
+//    }
+//    @PostMapping("/performances")
+//    Performance performance(@RequestBody Performance performance) {
+//        return performanceRepository.save(performance);
+//    }
+//}

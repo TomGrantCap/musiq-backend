@@ -1,17 +1,16 @@
 package Backend.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import Backend.Entities.DJ;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.annotations.Cascade;
 
-import java.util.Objects;
+import java.util.List;
 
 @Entity
 public class Performance {
 
     @Id
-    @GeneratedValue
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -19,48 +18,34 @@ public class Performance {
 
     private String genre;
 
-    @OneToOne
-    @JoinColumn()
-    private DJ dj;
-
+    @OneToMany
+    List<DJ> djs;
 
     protected Performance() {}
 
-    public Performance(DJ dj, String name, String genre) {
+    public Performance(List<DJ>djs, String name, String genre) {
 
         this.name = name;
         this.genre = genre;
-        this.dj = dj;
+        this.djs = djs;
     }
 
     public Long getId() {
         return this.id;
     }
-
-    public DJ getDJ(){ return dj; }
-
+    public void setId(Long id) { this.id = id; }
     public String getName() {
         return this.name;
     }
-
-    public String getGenre() {
-        return this.genre;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setId(DJ dj) {
-        this.dj = dj;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
-
+    public String getGenre() {
+        return this.genre;
+    }
     public void setGenre(String genre) {
         this.genre = genre;
     }
-
+    public List<DJ> getDjs() { return djs; }
+    public void setDjs(List<DJ> djs) { this.djs = djs; }
 }
