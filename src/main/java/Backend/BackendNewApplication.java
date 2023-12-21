@@ -35,14 +35,16 @@ public class BackendNewApplication implements CommandLineRunner {
         djRepository.save(dj3);
 
         List<DJ> djList1 = new ArrayList<>();
-        djList1.add(dj1);
         List<DJ> djList2 = new ArrayList<>();
-        djList2.add(dj2);
         List<DJ> djList3 = new ArrayList<>();
+
+        djList2.add(dj2);
+        djList1.add(dj1);
         djList3.add(dj3);
 
         performanceRepository.save(new Performance(djList1,"Glastonbury", "Pop"));
         performanceRepository.save(new Performance(djList2,"Fuizenfest", "Metal"));
         performanceRepository.save(new Performance(djList3,"Underground", "Rap"));
+
     }
 }

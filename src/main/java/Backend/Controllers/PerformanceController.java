@@ -1,57 +1,66 @@
 package Backend.Controllers;
-import Backend.Entities.DJ;
+
 import Backend.Entities.Performance;
 import Backend.Repositories.PerformanceRepository;
+import Backend.Services.PerformanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Optional;
 
 @RestController
 public class PerformanceController {
 
     @Autowired
-    private PerformanceRepository performanceRepository;
+    PerformanceService performanceService;
 
+    //POST
     @PostMapping("/performances")
     Performance create(@RequestBody Performance performance){
-        return performanceRepository.save(performance);
+        return performanceService.Save(performance);
     }
+
+    //GET
     @GetMapping("/performances")
     Iterable<Performance> read(){
-        return performanceRepository.findAll();
+        return performanceService.FindAll();
     }
 
+    //PUT
     @PutMapping("/performances")
     Performance update(@RequestBody Performance performance) {
-        return performanceRepository.save(performance);
+        return performanceService.Save(performance);
     }
+
+    //DELETE
     @DeleteMapping("/performances/{id}")
     void delete(@PathVariable Long id){
-        performanceRepository.deleteById(id);
+        performanceService.DeleteById(id);
     }
 
-}
+    //SEARCH FUNCTIONS
+    //Find by ID
+    @GetMapping("/performances/{id}")
+    Optional<Performance> findByID(@PathVariable Long id) {
+        return performanceService.FindById(id);
+    }
 
-//    @GetMapping("/performances")    //Get all DJs in DJ repository
-//    List<Performance> performances(){
-//        return performanceRepository.findAll();
-//    }
-//    @GetMapping("/performances/id/{id}")
-//    Optional<Performance> performance(@PathVariable Long id) {
-//        return performanceRepository.findById(id);
-//    }
-//    @GetMapping("/performances/genre/{genre}")
-//    Optional<Performance> performanceGenre(@PathVariable String genre) {
-//        return Optional.ofNullable(performanceRepository.findPerformancesByGenreEqualsIgnoreCase(genre));
-//    }
-//    @GetMapping("/performances/name/{name}")
-//    Optional<Performance> performanceName(@PathVariable String name) {
-//        return Optional.ofNullable(performanceRepository.findPerformancesByNameEqualsIgnoreCase(name));
-//    }
-//    @PostMapping("/performances")
-//    Performance performance(@RequestBody Performance performance) {
-//        return performanceRepository.save(performance);
-//    }
-//}
+    //Find by name and/or genre
+    @GetMapping("/performances/search")
+    Iterable<Performance>findByQuery(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "genre", required = false) String genre)
+    {
+        if (name != null && genre != null){
+            return performanceService.FindByNameAndGenre(name, genre);
+        }
+        else if (name != null){
+            return performanceService.FindByName(name);
+        }
+        else if (genre != null){
+            return performanceService.FindByGenre(genre);
+        }
+        else{
+            return performanceService.FindAll();
+        }
+    }
+}

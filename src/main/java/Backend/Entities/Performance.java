@@ -1,25 +1,23 @@
 package Backend.Entities;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
-
 import java.util.List;
 
 @Entity
 public class Performance {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     private String name;
 
-
     private String genre;
 
     @OneToMany
-    List<DJ> djs;
+    @JoinColumn
+    private List<DJ> djs;
 
     protected Performance() {}
 
