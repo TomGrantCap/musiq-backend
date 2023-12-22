@@ -1,44 +1,53 @@
 package Backend.Controllers;
 
 import Backend.Entities.DJ;
-import Backend.Repositories.DJRepository;
+import Backend.ErrorHandler.FieldErrorMessage;
+import Backend.Services.DJService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class DJController {
 
     @Autowired
-    private DJRepository djRepository;
+    DJService djService;
 
-//    @GetMapping("/djs")    //Get all DJs in DJ repository
-//    List<DJ> djs(){
-//        return djRepository.findAll();
-//    }
-
+    //POST
     @PostMapping("/djs")
-    DJ create(@RequestBody DJ dj){
-        return djRepository.save(dj);
+    DJ create(@Valid @RequestBody DJ dj){
+        return djService.Save(dj);
     }
+
+    //GET
     @GetMapping("/djs")
     Iterable<DJ> read(){
-        return djRepository.findAll();
+        return djService.FindAll();
     }
 
+    //PUT
     @PutMapping("/djs")
-    DJ update(@RequestBody DJ dj) {
-        return djRepository.save(dj);
+    ResponseEntity<DJ> update(@Valid @RequestBody DJ dj) {
+            return new ResponseEntity<>(djService.Save(dj), HttpStatus.OK);
     }
+
+    //DELETE
     @DeleteMapping("/djs/{id}")
     void delete(@PathVariable Long id){
-        djRepository.deleteById(id);
+        djService.DeleteById(id);
     }
+
+    //SEARCH FUNCTIONS
     @GetMapping("/djs/{id}")
     Optional<DJ> findByID(@PathVariable Long id) {
-        return djRepository.findById(id);
+        return djService.FindById(id);
 }
 
     @GetMapping("/djs/search")
@@ -47,33 +56,24 @@ public class DJController {
             @RequestParam(value = "genre", required = false) String genre)
     {
         if (name != null && genre != null){
-            return djRepository.findByNameEqualsIgnoreCaseAndGenreEqualsIgnoreCase(name, genre);
+            return djService.FindByNameAndGenre(name, genre);
         }
         else if (name != null){
-            return djRepository.findDJsByNameEqualsIgnoreCase(name);
+            return djService.FindByName(name);
         }
         else if (genre != null){
-            return djRepository.findDJsByGenreEqualsIgnoreCase(genre);
+            return djService.FindByGenre(genre);
         }
-        else{
-            return djRepository.findAll();
+        else {
+            return djService.FindAll();
+        }
     }
-
+    //Error handling
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    List<FieldErrorMessage>exceptionHandler(MethodArgumentNotValidException e){
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        List<FieldErrorMessage> fieldErrorMessages = fieldErrors.stream().map(fieldError -> new FieldErrorMessage(fieldError.getField(), fieldError.getDefaultMessage())).collect(Collectors.toList());
+        return fieldErrorMessages;
     }
-
-//    @GetMapping("/djs/genre/{genre}")
-//    Optional<DJ> DJGenre(@PathVariable String genre) {
-//        return Optional.ofNullable(djRepository.findDJsByGenreEqualsIgnoreCase(genre));
-//    }
-//
-//    @GetMapping("/djs/name/{name}")
-//    Optional<DJ> DJName(@PathVariable String name) {
-//        return Optional.ofNullable(djRepository.findDJsByNameEqualsIgnoreCase(name));
-//    }
-//
-//    @GetMapping("/djs/length/{length}")
-//    List<DJ> DJLength(@PathVariable int length) {
-//        return djRepository.findDJIfNameLongerThan(length);
-//    }
-
 }

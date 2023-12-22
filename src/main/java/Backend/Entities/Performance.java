@@ -1,8 +1,6 @@
 package Backend.Entities;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Performance {
@@ -11,21 +9,22 @@ public class Performance {
     @GeneratedValue
     private Long id;
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     private String genre;
 
-    @OneToMany
-    @JoinColumn
-    private List<DJ> djs;
+    @NotBlank
+    @OneToOne
+    private DJ dj;
 
     protected Performance() {}
 
-    public Performance(List<DJ>djs, String name, String genre) {
+    public Performance(String name, String genre) {
 
         this.name = name;
         this.genre = genre;
-        this.djs = djs;
     }
 
     public Long getId() {
@@ -44,6 +43,6 @@ public class Performance {
     public void setGenre(String genre) {
         this.genre = genre;
     }
-    public List<DJ> getDjs() { return djs; }
-    public void setDjs(List<DJ> djs) { this.djs = djs; }
+    public DJ getDJ() { return dj; }
+    public void setDJ(DJ dj) { this.dj = dj; }
 }

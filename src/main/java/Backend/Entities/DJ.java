@@ -1,8 +1,7 @@
 package Backend.Entities;
 
 import jakarta.persistence.*;
-
-import java.util.Objects;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class DJ {
@@ -10,8 +9,11 @@ public class DJ {
     @Id
     @GeneratedValue
     private Long id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String genre;
+    @NotBlank
     protected DJ() {}
 
     public DJ(String name, String genre) {

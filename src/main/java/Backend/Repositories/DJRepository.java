@@ -1,4 +1,5 @@
 package Backend.Repositories;
+
 import java.util.ArrayList;
 import  java.util.List;
 import Backend.Entities.DJ;
@@ -8,7 +9,6 @@ public interface DJRepository extends JpaRepository<DJ, Long> {
 
     Iterable<DJ> findDJsByGenreEqualsIgnoreCase(String genre);
     Iterable<DJ> findDJsByNameEqualsIgnoreCase(String name);
-
     Iterable<DJ> findByNameEqualsIgnoreCaseAndGenreEqualsIgnoreCase(String name, String genre);
 
     default List<DJ> findDJIfNameLongerThan(int length){
