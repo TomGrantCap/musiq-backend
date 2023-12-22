@@ -4,6 +4,7 @@ import Backend.Entities.DJ;
 import Backend.ErrorHandler.FieldErrorMessage;
 import Backend.Services.DJService;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,11 @@ public class DJController {
     //DELETE
     @DeleteMapping("/djs/{id}")
     void delete(@PathVariable Long id){
-        djService.DeleteById(id);
+        if (djService.FindById(id).isPresent())
+        {
+            djService.DeleteById(id);
+        }
+        else throw new ValidationException("ID is invalid");
     }
 
     //SEARCH FUNCTIONS
@@ -69,6 +74,10 @@ public class DJController {
         }
     }
     //Error handling
+    @ExceptionHandler(ValidationException.class)
+    ResponseEntity<String> exceptionHandler(ValidationException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     List<FieldErrorMessage>exceptionHandler(MethodArgumentNotValidException e){

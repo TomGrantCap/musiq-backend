@@ -9,7 +9,7 @@ create table PERFORMANCE(ID bigint primary key not null auto_increment,
                 NAME varchar(255),
                 GENRE varchar(255),
                 DJ_ID bigint, foreign key(DJ_ID) references DJ(ID)
-                    on delete cascade
+                on delete cascade
 );
 
 insert into DJ values (1, 'KoRn', 'metal');

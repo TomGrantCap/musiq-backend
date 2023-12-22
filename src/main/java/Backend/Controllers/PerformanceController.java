@@ -1,11 +1,21 @@
 package Backend.Controllers;
 
 import Backend.Entities.Performance;
+import Backend.ErrorHandler.FieldErrorMessage;
 import Backend.Repositories.PerformanceRepository;
 import Backend.Services.PerformanceService;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class PerformanceController {
@@ -15,7 +25,7 @@ public class PerformanceController {
 
     //POST
     @PostMapping("/performances")
-    Performance create(@RequestBody Performance performance){
+    Performance create(@Valid @RequestBody Performance performance){
         return performanceService.Save(performance);
     }
 
@@ -27,14 +37,18 @@ public class PerformanceController {
 
     //PUT
     @PutMapping("/performances")
-    Performance update(@RequestBody Performance performance) {
+    Performance update(@Valid @RequestBody Performance performance) {
         return performanceService.Save(performance);
     }
 
     //DELETE
     @DeleteMapping("/performances/{id}")
     void delete(@PathVariable Long id){
-        performanceService.DeleteById(id);
+        if (performanceService.FindById(id).isPresent())
+        {
+            performanceService.DeleteById(id);
+        }
+        else throw new ValidationException("ID is invalid");
     }
 
     //SEARCH FUNCTIONS
@@ -62,5 +76,18 @@ public class PerformanceController {
         else{
             return performanceService.FindAll();
         }
+    }
+
+    //Error handling
+    @ExceptionHandler(ValidationException.class)
+    ResponseEntity<String> exceptionHandler(ValidationException exception){
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    List<FieldErrorMessage> exceptionHandler(MethodArgumentNotValidException e){
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        List<FieldErrorMessage> fieldErrorMessages = fieldErrors.stream().map(fieldError -> new FieldErrorMessage(fieldError.getField(), fieldError.getDefaultMessage())).collect(Collectors.toList());
+        return fieldErrorMessages;
     }
 }
