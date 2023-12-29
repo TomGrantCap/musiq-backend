@@ -35,7 +35,7 @@ public class DJService {
         return djRepository.findDJsByNameEqualsIgnoreCase(name);
     }
 
-    public Iterable<DJ> FindByGenre(String genre){
+    public Iterable<DJ> FindByGenre(String genre) {
         return djRepository.findDJsByGenreEqualsIgnoreCase(genre);
     }
 }

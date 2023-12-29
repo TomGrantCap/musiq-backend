@@ -1,11 +1,11 @@
-drop table DJ if exists;
+drop table if exists DJ;
 create table DJ(ID bigint primary key not null,
                 NAME varchar(255),
                 GENRE varchar(255)
                );
 
-drop table PERFORMANCE if exists;
-create table PERFORMANCE(ID bigint primary key not null auto_increment,
+drop table if exists PERFORMANCE;
+create table PERFORMANCE(ID bigint primary key not null,
                 NAME varchar(255),
                 GENRE varchar(255),
                 DJ_ID bigint, foreign key(DJ_ID) references DJ(ID)

@@ -21,6 +21,17 @@ public class DJController {
     @Autowired
     DJService djService;
 
+    @GetMapping("/")
+    String message(){
+        if (djService.FindById(1L).isPresent()){
+            return "DJ and performance website started successfully. Here is DJ 1: " + djService.FindById(1L).get() + ".";
+        }
+        else{
+            return "DJ not found, apparently.";
+        }
+
+    }
+
     //POST
     @PostMapping("/djs")
     DJ create(@Valid @RequestBody DJ dj){
@@ -73,6 +84,7 @@ public class DJController {
             return djService.FindAll();
         }
     }
+
     //Error handling
     @ExceptionHandler(ValidationException.class)
     ResponseEntity<String> exceptionHandler(ValidationException exception){
