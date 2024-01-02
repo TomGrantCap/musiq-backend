@@ -1,4 +1,4 @@
-package Backend.ErrorHandler;
+package backend.ErrorHandler;
 
 public class FieldErrorMessage {
     private String field;

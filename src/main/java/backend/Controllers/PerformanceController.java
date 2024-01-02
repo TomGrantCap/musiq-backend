@@ -1,8 +1,9 @@
-package Backend.Controllers;
+package backend.Controllers;
 
-import Backend.Entities.DJ;
-import Backend.ErrorHandler.FieldErrorMessage;
-import Backend.Services.DJService;
+import backend.Entities.Performance;
+import backend.ErrorHandler.FieldErrorMessage;
+import backend.Services.PerformanceService;
+import backend.dtos.PerformanceDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,77 +12,69 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-public class DJController {
+public class PerformanceController {
 
     @Autowired
-    DJService djService;
-
-    @GetMapping("/")
-    String message(){
-        if (djService.FindById(1L).isPresent()){
-            return "DJ and performance website started successfully. Here is DJ 1: " + djService.FindById(1L).get() + ".";
-        }
-        else{
-            return "DJ not found, apparently.";
-        }
-
-    }
+    PerformanceService performanceService;
 
     //POST
-    @PostMapping("/djs")
-    DJ create(@Valid @RequestBody DJ dj){
-        return djService.Save(dj);
+    @PostMapping("/performances")
+    PerformanceDTO create(@RequestBody Performance performance){
+        return performanceService.save(performance);
     }
 
     //GET
-    @GetMapping("/djs")
-    Iterable<DJ> read(){
-        return djService.FindAll();
+    @GetMapping("/performances")
+    Iterable<PerformanceDTO> read(){
+        return performanceService.findAll();
     }
 
     //PUT
-    @PutMapping("/djs")
-    ResponseEntity<DJ> update(@Valid @RequestBody DJ dj) {
-            return new ResponseEntity<>(djService.Save(dj), HttpStatus.OK);
+    @PutMapping("/performances")
+    ResponseEntity<PerformanceDTO> update(@Valid @RequestBody Performance performance) {
+        return new ResponseEntity<>(performanceService.save(performance), HttpStatus.OK);
     }
 
     //DELETE
-    @DeleteMapping("/djs/{id}")
+    @DeleteMapping("/performances/{id}")
     void delete(@PathVariable Long id){
-        if (djService.FindById(id).isPresent())
+        if (performanceService.findById(id).isPresent())
         {
-            djService.DeleteById(id);
+            performanceService.deleteById(id);
         }
         else throw new ValidationException("ID is invalid");
     }
 
     //SEARCH FUNCTIONS
-    @GetMapping("/djs/{id}")
-    Optional<DJ> findByID(@PathVariable Long id) {
-        return djService.FindById(id);
-}
+    //Find by ID
+    @GetMapping("/performances/{id}")
+    Optional<PerformanceDTO> findByID(@PathVariable Long id) {
+        return performanceService.findById(id);
+    }
 
-    @GetMapping("/djs/search")
-    Iterable<DJ>findByQuery(
+    //Find by name and/or genre
+    @GetMapping("/performances/search")
+    Iterable<PerformanceDTO>findByQuery(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "genre", required = false) String genre)
     {
         if (name != null && genre != null){
-            return djService.FindByNameAndGenre(name, genre);
+            return performanceService.findByNameAndGenre(name, genre);
         }
         else if (name != null){
-            return djService.FindByName(name);
+            return performanceService.findByName(name);
         }
         else if (genre != null){
-            return djService.FindByGenre(genre);
+            return performanceService.findByGenre(genre);
         }
-        else {
-            return djService.FindAll();
+        else{
+            return performanceService.findAll();
         }
     }
 
@@ -92,7 +85,7 @@ public class DJController {
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    List<FieldErrorMessage>exceptionHandler(MethodArgumentNotValidException e){
+    List<FieldErrorMessage> exceptionHandler(MethodArgumentNotValidException e){
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         List<FieldErrorMessage> fieldErrorMessages = fieldErrors.stream().map(fieldError -> new FieldErrorMessage(fieldError.getField(), fieldError.getDefaultMessage())).collect(Collectors.toList());
         return fieldErrorMessages;

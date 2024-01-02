@@ -1,0 +1,41 @@
+#BUILD AND RUN
+#cd 'C:\Users\tgrant\Documents\SE Track\Backend\BackendNew'
+#docker-compose up --build
+
+#REMOVE VOLUMES
+#docker-compose down --volumes
+
+#PRUNE
+#docker system prune
+
+version: '2'
+services:
+
+    backendnewdb:
+        container_name: backendnewdb
+        image: postgres:latest
+        restart: always
+        environment:
+            POSTGRES_USER: tg
+            POSTGRES_PASSWORD: admin
+            POSTGRES_DB: backendnewdb
+        #volumes:
+            #- ./data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        networks:
+            - tg-network
+
+    backendnew:
+        container_name: backendnew
+        build:
+            dockerfile: Dockerfile
+        image: backendnew:latest
+        ports:
+            - 9090:9090
+        networks:
+            - tg-network
+
+networks:
+    tg-network:
+        driver: bridge

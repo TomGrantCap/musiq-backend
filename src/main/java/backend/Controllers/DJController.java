@@ -1,9 +1,9 @@
-package Backend.Controllers;
+package backend.Controllers;
 
-import Backend.Entities.Performance;
-import Backend.ErrorHandler.FieldErrorMessage;
-import Backend.Repositories.PerformanceRepository;
-import Backend.Services.PerformanceService;
+import backend.Entities.DJ;
+import backend.ErrorHandler.FieldErrorMessage;
+import backend.Services.DJService;
+import backend.dtos.DjDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,69 +12,66 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-public class PerformanceController {
+public class DJController {
 
     @Autowired
-    PerformanceService performanceService;
+    DJService djService;
 
     //POST
-    @PostMapping("/performances")
-    Performance create(@Valid @RequestBody Performance performance){
-        return performanceService.Save(performance);
+    @PostMapping("/djs")
+    DjDTO create(@RequestBody DJ dj){
+        return djService.save(dj);
     }
 
     //GET
-    @GetMapping("/performances")
-    Iterable<Performance> read(){
-        return performanceService.FindAll();
+    @GetMapping("/djs")
+    Iterable<DjDTO> read(){
+        return djService.findAll();
     }
 
     //PUT
-    @PutMapping("/performances")
-    Performance update(@Valid @RequestBody Performance performance) {
-        return performanceService.Save(performance);
+    @PutMapping("/djs")
+    ResponseEntity<DjDTO> update(@Valid @RequestBody DJ dj) {
+            return new ResponseEntity<>(djService.save(dj), HttpStatus.OK);
     }
 
     //DELETE
-    @DeleteMapping("/performances/{id}")
+    @DeleteMapping("/djs/{id}")
     void delete(@PathVariable Long id){
-        if (performanceService.FindById(id).isPresent())
+        if (djService.findById(id).isPresent())
         {
-            performanceService.DeleteById(id);
+            djService.deleteById(id);
         }
         else throw new ValidationException("ID is invalid");
     }
 
     //SEARCH FUNCTIONS
-    //Find by ID
-    @GetMapping("/performances/{id}")
-    Optional<Performance> findByID(@PathVariable Long id) {
-        return performanceService.FindById(id);
-    }
+    @GetMapping("/djs/{id}")
+    Optional<DjDTO> findByID(@PathVariable Long id) {
+        return djService.findById(id);
+}
 
-    //Find by name and/or genre
-    @GetMapping("/performances/search")
-    Iterable<Performance>findByQuery(
+    @GetMapping("/djs/search")
+    Iterable<DjDTO>findByQuery(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "genre", required = false) String genre)
     {
         if (name != null && genre != null){
-            return performanceService.FindByNameAndGenre(name, genre);
+            return djService.findByNameAndGenre(name, genre);
         }
         else if (name != null){
-            return performanceService.FindByName(name);
+            return djService.findByName(name);
         }
         else if (genre != null){
-            return performanceService.FindByGenre(genre);
+            return djService.findByGenre(genre);
         }
-        else{
-            return performanceService.FindAll();
+        else {
+            return djService.findAll();
         }
     }
 
@@ -85,7 +82,7 @@ public class PerformanceController {
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    List<FieldErrorMessage> exceptionHandler(MethodArgumentNotValidException e){
+    List<FieldErrorMessage>exceptionHandler(MethodArgumentNotValidException e){
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         List<FieldErrorMessage> fieldErrorMessages = fieldErrors.stream().map(fieldError -> new FieldErrorMessage(fieldError.getField(), fieldError.getDefaultMessage())).collect(Collectors.toList());
         return fieldErrorMessages;

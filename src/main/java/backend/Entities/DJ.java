@@ -1,25 +1,34 @@
-package Backend.Entities;
+package backend.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
-@Entity
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity(name="DJS")
 public class DJ {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+//    @NotBlank
     private String name;
-    @NotBlank
+//    @NotBlank
     private String genre;
-    @NotBlank
-    protected DJ() {}
+
+    @JsonIgnoreProperties("djs")
+    @ManyToMany(mappedBy = "dj")
+    private Set<Performance> performance  = new HashSet<>();
 
     public DJ(String name, String genre) {
 
         this.name = name;
         this.genre = genre;
+    }
+
+    protected DJ() {
+
     }
 
     public Long getId() {
@@ -44,6 +53,14 @@ public class DJ {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public Set<Performance> getPerformance() {
+        return this.performance;
+    }
+
+    public void setPerformance(Set<Performance> performance) {
+        this.performance = performance;
     }
 
 }
