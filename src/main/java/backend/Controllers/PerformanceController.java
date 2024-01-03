@@ -1,21 +1,15 @@
 package backend.Controllers;
 
 import backend.Entities.Performance;
-import backend.ErrorHandler.FieldErrorMessage;
+import backend.ErrorHandler.PerformanceException;
 import backend.Services.PerformanceService;
 import backend.dtos.PerformanceDTO;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class PerformanceController {
@@ -31,11 +25,11 @@ public class PerformanceController {
 
     //GET
     @GetMapping("/performances")
-    Iterable<PerformanceDTO> read(){
+    Iterable<PerformanceDTO> read() throws PerformanceException {
         if (performanceService.findAll().iterator().hasNext()){
             return performanceService.findAll();
         }
-        else throw new ValidationException("No records found.");
+        else throw new PerformanceException("No records found.");
     }
 
     //PUT
@@ -46,31 +40,30 @@ public class PerformanceController {
 
     //DELETE
     @DeleteMapping("/performances/delete/{id}")
-    void delete(@PathVariable Long id){
+    void delete(@PathVariable Long id) throws PerformanceException {
         if (performanceService.findById(id).isPresent())
         {
             performanceService.deleteById(id);
         }
-        else throw new ValidationException("ID is invalid");
+        else throw new PerformanceException("ID is invalid");
     }
 
     //SEARCH FUNCTIONS
     //Find by ID
     @GetMapping("/performances/getbyid/{id}")
-    Optional<PerformanceDTO> findByID(@PathVariable Long id) {
+    Optional<PerformanceDTO> findByID(@PathVariable Long id) throws PerformanceException {
         if (performanceService.findById(id).isPresent())
         {
             return performanceService.findById(id);
         }
-        else throw new ValidationException("ID is invalid");
+        else throw new PerformanceException("ID is invalid");
     }
 
     //Find by name and/or genre
     @GetMapping("/performances/search")
     Iterable<PerformanceDTO>findByQuery(
             @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "genre", required = false) String genre)
-    {
+            @RequestParam(value = "genre", required = false) String genre) throws PerformanceException {
         if (name != null && genre != null){
             return performanceService.findByNameAndGenre(name, genre);
         }
@@ -81,20 +74,21 @@ public class PerformanceController {
             return performanceService.findByGenre(genre);
         }
         else{
-            throw new ValidationException("No records found.");
+            throw new PerformanceException("No records found.");
         }
     }
 
     //Error handling
-    @ExceptionHandler(ValidationException.class)
-    ResponseEntity<String> exceptionHandler(ValidationException exception){
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(PerformanceException.class)
+    ResponseEntity<String> exceptionHandler(PerformanceException exception) {
+        return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    List<FieldErrorMessage> exceptionHandler(MethodArgumentNotValidException e){
-        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-        List<FieldErrorMessage> fieldErrorMessages = fieldErrors.stream().map(fieldError -> new FieldErrorMessage(fieldError.getField(), fieldError.getDefaultMessage())).collect(Collectors.toList());
-        return fieldErrorMessages;
-    }
+
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    List<FieldErrorMessage> exceptionHandler(MethodArgumentNotValidException e){
+//        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+//        List<FieldErrorMessage> fieldErrorMessages = fieldErrors.stream().map(fieldError -> new FieldErrorMessage(fieldError.getField(), fieldError.getDefaultMessage())).collect(Collectors.toList());
+//        return fieldErrorMessages;
+//    }
 }
