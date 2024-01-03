@@ -8,14 +8,12 @@ public class DjDTO {
     private String name;
     private String genre;
     private Set<Long> performanceIDs;
-    private Set<String> performanceNames;
 
     public DjDTO(Long id, String name, String genre) {
         this.id = id;
         this.name = name;
         this.genre = genre;
         performanceIDs = new HashSet<>();
-        this.performanceNames = new HashSet<>();
 
     }
 
@@ -43,13 +41,6 @@ public class DjDTO {
         this.genre = genre;
     }
 
-    public Set<String> getPerformanceNames() {
-        return performanceNames;
-    }
-
-    public void setPerformanceNames(Set<String> performanceNames) {
-        this.performanceNames = performanceNames;
-    }
     public Set<Long> getPerformanceIDs() {
         return performanceIDs;
     }

@@ -24,7 +24,7 @@ public class DJController {
     DJService djService;
 
     //POST
-    @PostMapping("/djs")
+    @PostMapping("/djs/post")
     DjDTO create(@RequestBody DJ dj){
         return djService.save(dj);
     }
@@ -40,13 +40,13 @@ public class DJController {
 
 
     //PUT
-    @PutMapping("/djs")
+    @PutMapping("/djs/put")
     ResponseEntity<DjDTO> update(@Valid @RequestBody DJ dj) {
             return new ResponseEntity<>(djService.save(dj), HttpStatus.OK);
     }
 
     //DELETE
-    @DeleteMapping("/djs/{id}")
+    @DeleteMapping("/djs/delete/{id}")
     void delete(@PathVariable Long id){
         if (djService.findById(id).isPresent())
         {
@@ -56,7 +56,7 @@ public class DJController {
     }
 
     //SEARCH FUNCTIONS
-    @GetMapping("/djs/{id}")
+    @GetMapping("/djs/getbyid/{id}")
     Optional<DjDTO> findByID(@PathVariable Long id) {
         if (djService.findById(id).isPresent())
         {

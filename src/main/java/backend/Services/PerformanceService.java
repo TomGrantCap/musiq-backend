@@ -1,16 +1,12 @@
 package backend.Services;
 
+import backend.Entities.DJ;
 import backend.Entities.Performance;
 import backend.Repositories.DJRepository;
 import backend.Repositories.PerformanceRepository;
-import backend.dtos.DjDTO;
-import backend.dtos.DjMapper;
 import backend.dtos.PerformanceDTO;
 import backend.dtos.PerformanceMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -29,35 +25,48 @@ public class PerformanceService {
         this.djRepository = djRepository;
     }
 
-    //Performance is saved in repository, then returned to mapper, then returned as DTO.
+    //SAVE
     public PerformanceDTO save(Performance performance){
         return performanceMapper.mapToDto(performanceRepository.save(performance));
     }
+
+    //FIND ALL
     public Iterable<PerformanceDTO> findAll(){
-        List<PerformanceDTO> performanceDTOList = performanceRepository.findAll()
+        return performanceRepository.findAll()
                 .stream()
                 .map(performanceMapper::mapToDto)
                 .collect(Collectors.toList());
+    }
 
-        //Populates PerformanceDTO's djNames column.
-        for (PerformanceDTO performanceDTO : performanceDTOList){
-            Set<String> performanceNames = new HashSet<>();
-            for (Long id : performanceDTO.getDjIDs()){
-                performanceNames.add(djRepository.findById(id).get().getName());
+    //DELETE BY ID
+    public void deleteById(Long performanceId){
+        Set<Long> djIdSet = performanceRepository.findById(performanceId).map(performanceMapper::mapToDto).get().getDjIDs();
+        if (djIdSet.isEmpty()){
+            performanceRepository.deleteById(performanceId);
+            System.out.println("Performance lacking DJs deleted");
+        }
+        else{
+            //For each DJ playing in performance, removes performance from them prior to deletion.
+            Performance performance = performanceRepository.findById(performanceId).get();
+            for (Long djId : djIdSet){
+                DJ dj = djRepository.findById(djId).get();
+                Set<Performance> performances = dj.getPerformance();
+                performances.remove(performance);
+                dj.setPerformance(performances);
+                djRepository.save(dj);
+                System.out.println("Performance " + performanceId + " deleted for DJ " + djId);
             }
-            performanceDTO.setDjNames(performanceNames);
-    }
-        return performanceDTOList;
-    }
-    public void deleteById(Long id){
-        performanceRepository.deleteById(id);
+            performanceRepository.deleteById(performanceId);
+        }
     }
 
+    //FIND BY ID
     public Optional<PerformanceDTO> findById(Long id){
         return performanceRepository.findById(id)
                 .map(performanceMapper::mapToDto);
     }
 
+    //FIND BY NAME AND/OR GENRE
     public Iterable<PerformanceDTO> findByNameAndGenre(String name, String genre){
         return performanceRepository.findByNameEqualsIgnoreCaseAndGenreEqualsIgnoreCase(name, genre)
                 .stream()
@@ -65,6 +74,7 @@ public class PerformanceService {
                 .collect(Collectors.toList());
     }
 
+    //FIND BY NAME
     public Iterable<PerformanceDTO> findByName(String name){
         return performanceRepository.findPerformancesByNameEqualsIgnoreCase(name)
                 .stream()
@@ -72,6 +82,7 @@ public class PerformanceService {
                 .collect(Collectors.toList());
     }
 
+    //FIND BY GENRE
     public Iterable<PerformanceDTO> findByGenre(String genre){
         return performanceRepository.findPerformancesByGenreEqualsIgnoreCase(genre)
                 .stream()

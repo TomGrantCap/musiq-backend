@@ -24,7 +24,7 @@ public class PerformanceController {
     PerformanceService performanceService;
 
     //POST
-    @PostMapping("/performances")
+    @PostMapping("/performances/post")
     PerformanceDTO create(@RequestBody Performance performance){
         return performanceService.save(performance);
     }
@@ -39,13 +39,13 @@ public class PerformanceController {
     }
 
     //PUT
-    @PutMapping("/performances")
+    @PutMapping("/performances/put")
     PerformanceDTO update(@Valid @RequestBody Performance performance) {
         return performanceService.save(performance);
     }
 
     //DELETE
-    @DeleteMapping("/performances/{id}")
+    @DeleteMapping("/performances/delete/{id}")
     void delete(@PathVariable Long id){
         if (performanceService.findById(id).isPresent())
         {
@@ -56,7 +56,7 @@ public class PerformanceController {
 
     //SEARCH FUNCTIONS
     //Find by ID
-    @GetMapping("/performances/{id}")
+    @GetMapping("/performances/getbyid/{id}")
     Optional<PerformanceDTO> findByID(@PathVariable Long id) {
         if (performanceService.findById(id).isPresent())
         {
