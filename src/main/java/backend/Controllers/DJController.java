@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//Controller should only speak to service, not to repository.
 @RestController
 public class DJController {
 
@@ -31,8 +32,12 @@ public class DJController {
     //GET
     @GetMapping("/djs")
     Iterable<DjDTO> read(){
-        return djService.findAll();
+        if (djService.findAll().iterator().hasNext()){
+            return djService.findAll();
+        }
+        else throw new ValidationException("No records found.");
     }
+
 
     //PUT
     @PutMapping("/djs")
@@ -53,8 +58,13 @@ public class DJController {
     //SEARCH FUNCTIONS
     @GetMapping("/djs/{id}")
     Optional<DjDTO> findByID(@PathVariable Long id) {
-        return djService.findById(id);
-}
+        if (djService.findById(id).isPresent())
+        {
+            return djService.findById(id);
+        }
+        else throw new ValidationException("ID is invalid");
+    }
+
 
     @GetMapping("/djs/search")
     Iterable<DjDTO>findByQuery(
@@ -71,7 +81,7 @@ public class DJController {
             return djService.findByGenre(genre);
         }
         else {
-            return djService.findAll();
+            throw new ValidationException("No records found.");
         }
     }
 

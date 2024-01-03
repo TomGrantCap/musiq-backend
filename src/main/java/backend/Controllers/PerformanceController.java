@@ -32,13 +32,16 @@ public class PerformanceController {
     //GET
     @GetMapping("/performances")
     Iterable<PerformanceDTO> read(){
-        return performanceService.findAll();
+        if (performanceService.findAll().iterator().hasNext()){
+            return performanceService.findAll();
+        }
+        else throw new ValidationException("No records found.");
     }
 
     //PUT
     @PutMapping("/performances")
-    ResponseEntity<PerformanceDTO> update(@Valid @RequestBody Performance performance) {
-        return new ResponseEntity<>(performanceService.save(performance), HttpStatus.OK);
+    PerformanceDTO update(@Valid @RequestBody Performance performance) {
+        return performanceService.save(performance);
     }
 
     //DELETE
@@ -55,7 +58,11 @@ public class PerformanceController {
     //Find by ID
     @GetMapping("/performances/{id}")
     Optional<PerformanceDTO> findByID(@PathVariable Long id) {
-        return performanceService.findById(id);
+        if (performanceService.findById(id).isPresent())
+        {
+            return performanceService.findById(id);
+        }
+        else throw new ValidationException("ID is invalid");
     }
 
     //Find by name and/or genre
@@ -74,7 +81,7 @@ public class PerformanceController {
             return performanceService.findByGenre(genre);
         }
         else{
-            return performanceService.findAll();
+            throw new ValidationException("No records found.");
         }
     }
 

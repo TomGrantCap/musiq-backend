@@ -8,14 +8,15 @@ public class PerformanceDTO {
 private Long id;
 private String name;
 private String genre;
-
-private Set<Long> dj;
+private Set<Long> djIDs;
+private Set<String> djNames;
 
 public PerformanceDTO(Long id, String name, String genre) {
     this.id = id;
     this.name = name;
     this.genre = genre;
-    dj = new HashSet<>();
+    djIDs = new HashSet<>();
+    djNames = new HashSet<>();
 }
 
 public Long getId() {
@@ -42,12 +43,20 @@ public void setGenre(String genre) {
     this.genre = genre;
 }
 
-public Set<Long> getDj() {
-    return dj;
+public Set<Long> getDjIDs() {
+    return djIDs;
 }
 
-public void setDj(Set<Long> dj) {
-    this.dj = dj;
+public void setDj(Set<Long> djIDs) {
+    this.djIDs = djIDs;
 }
 
+
+public Set<String> getDjNames() {
+        return djNames;
+    }
+
+public void setDjNames(Set<String> djNames) {
+        this.djNames = djNames;
+    }
 }

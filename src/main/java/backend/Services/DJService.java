@@ -2,11 +2,12 @@ package backend.Services;
 
 import backend.Entities.DJ;
 import backend.Repositories.DJRepository;
+import backend.Repositories.PerformanceRepository;
 import backend.dtos.DjDTO;
 import backend.dtos.DjMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,16 +17,24 @@ public class DJService {
 
     final DjMapper djMapper;
 
-    public DJService(DJRepository djRepository, DjMapper djMapper) {
+    final PerformanceRepository performanceRepository;
+
+    public DJService(DJRepository djRepository, DjMapper djMapper, PerformanceRepository performanceRepository) {
         this.djRepository = djRepository;
         this.djMapper = djMapper;
+        this.performanceRepository = performanceRepository;
     }
 
     public DjDTO save(DJ dj){
         return djMapper.mapToDto(djRepository.save(dj));
     }
     public Iterable<DjDTO> findAll(){
-        return djRepository.findAll().stream().map(djMapper::mapToDto).collect(Collectors.toList());
+        List<DjDTO> djDTOList = djRepository.findAll()
+                .stream()
+                .map(djMapper::mapToDto)
+                .collect(Collectors.toList());
+
+        return populateNamesList(djDTOList);
     }
     public void deleteById(Long id){
         djRepository.deleteById(id);
@@ -55,6 +64,24 @@ public class DJService {
                 .stream()
                 .map(djMapper::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    public Iterable<DjDTO> populateNamesList(Iterable<DjDTO> djDTOList){
+        //Populates DjDTO's performanceNames column.
+
+        for (DjDTO djDTO : djDTOList){
+            djDTO.setPerformanceNames(getNames(djDTO));
+        }
+        return djDTOList;
+    }
+
+    public Set<String> getNames(DjDTO djDTO){
+        Set<String> performanceNames = new HashSet<>();
+        for (Long id : djDTO.getPerformanceIDs()){
+            performanceNames.add(performanceRepository.findById(id).get().getName());
+        }
+        djDTO.setPerformanceNames(performanceNames);
+        return performanceNames;
     }
 }
 

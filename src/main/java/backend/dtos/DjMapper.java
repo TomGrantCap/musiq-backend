@@ -11,7 +11,7 @@ public class DjMapper {
     public DjDTO mapToDto(DJ dj) {
         DjDTO djDto = new DjDTO(dj.getId(), dj.getName(), dj.getGenre());
 
-        djDto.setPerformance(dj.getPerformance()
+        djDto.setPerformanceIDs(dj.getPerformance()
                 .stream()
                 .map(Performance::getId)
                 .collect(Collectors.toSet()));  //Sets DJDTO's performances, being a set of IDs (longs).

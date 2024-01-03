@@ -10,7 +10,10 @@ import backend.dtos.PerformanceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,17 +21,33 @@ public class PerformanceService {
 
     final PerformanceRepository performanceRepository;
 
+    final DJRepository djRepository;
     final PerformanceMapper performanceMapper;
-    public PerformanceService(PerformanceRepository performanceRepository, PerformanceMapper performanceMapper) {
+    public PerformanceService(PerformanceRepository performanceRepository, PerformanceMapper performanceMapper, DJRepository djRepository) {
         this.performanceRepository = performanceRepository;
         this.performanceMapper = performanceMapper;
+        this.djRepository = djRepository;
     }
 
+    //Performance is saved in repository, then returned to mapper, then returned as DTO.
     public PerformanceDTO save(Performance performance){
         return performanceMapper.mapToDto(performanceRepository.save(performance));
     }
     public Iterable<PerformanceDTO> findAll(){
-        return performanceRepository.findAll().stream().map(performanceMapper::mapToDto).collect(Collectors.toList());
+        List<PerformanceDTO> performanceDTOList = performanceRepository.findAll()
+                .stream()
+                .map(performanceMapper::mapToDto)
+                .collect(Collectors.toList());
+
+        //Populates PerformanceDTO's djNames column.
+        for (PerformanceDTO performanceDTO : performanceDTOList){
+            Set<String> performanceNames = new HashSet<>();
+            for (Long id : performanceDTO.getDjIDs()){
+                performanceNames.add(djRepository.findById(id).get().getName());
+            }
+            performanceDTO.setDjNames(performanceNames);
+    }
+        return performanceDTOList;
     }
     public void deleteById(Long id){
         performanceRepository.deleteById(id);
