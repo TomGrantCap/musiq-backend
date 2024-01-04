@@ -18,4 +18,10 @@ public class PerformanceMapper {
 
         return performanceDto;
     }
+
+    public Performance mapFromDto(PerformanceDTO performanceDTO) {
+        Performance performance = new Performance(performanceDTO.getId(), performanceDTO.getName(), performanceDTO.getGenre());
+
+        return performance;
+    }
 }

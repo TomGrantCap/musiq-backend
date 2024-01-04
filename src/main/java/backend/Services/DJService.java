@@ -7,6 +7,7 @@ import backend.Repositories.PerformanceRepository;
 import backend.dtos.DjDTO;
 import backend.dtos.DjMapper;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,12 +25,14 @@ public class DJService {
     }
 
     //SAVE
-    public DjDTO save(DJ dj){
+    public DjDTO save(DjDTO djDto) {
+        DJ dj = djMapper.mapFromDto(djDto);
+        dj.setPerformance(new HashSet<>(performanceRepository.findAllById(djDto.getPerformanceIDs())));
         return djMapper.mapToDto(djRepository.save(dj));
     }
 
     //FIND ALL
-    public Iterable<DjDTO> findAll(){
+    public Iterable<DjDTO> findAll() {
         List<DjDTO> djDTOList = djRepository.findAll()
                 .stream()
                 .map(djMapper::mapToDto)
@@ -38,17 +41,18 @@ public class DJService {
         return djDTOList;
     }
 
+    //Implement 'findDJPerformances' method
+
     //DELETE BY ID
-    public void deleteById(Long djId){
+    public void deleteById(Long djId) {
         Set<Long> performanceIdSet = djRepository.findById(djId).map(djMapper::mapToDto).get().getPerformanceIDs();
-        if (performanceIdSet.isEmpty()){
+        if (performanceIdSet.isEmpty()) {
             djRepository.deleteById(djId);
             System.out.println("DJ lacking performances deleted");
-        }
-        else{
+        } else {
             //For each performance in DJ's set, removes the DJ from said set prior to deletion.
             DJ dj = djRepository.findById(djId).get();
-            for (Long performanceId : performanceIdSet){
+            for (Long performanceId : performanceIdSet) {
                 Performance performance = performanceRepository.findById(performanceId).get();
                 Set<DJ> djs = performance.getDJ();
                 djs.remove(dj);
@@ -61,12 +65,12 @@ public class DJService {
     }
 
     //FIND BY ID
-    public Optional<DjDTO> findById(Long id){
+    public Optional<DjDTO> findById(Long id) {
         return djRepository.findById(id).map(djMapper::mapToDto);
     }
 
     //FIND BY NAME AND/OR GENRE
-    public Iterable<DjDTO> findByNameAndGenre(String name, String genre){
+    public Iterable<DjDTO> findByNameAndGenre(String name, String genre) {
         return djRepository.findByNameEqualsIgnoreCaseAndGenreEqualsIgnoreCase(name, genre)
                 .stream()
                 .map(djMapper::mapToDto)
@@ -74,7 +78,7 @@ public class DJService {
     }
 
     //FIND BY NAME
-    public Iterable<DjDTO> findByName(String name){
+    public Iterable<DjDTO> findByName(String name) {
         return djRepository.findDJsByNameEqualsIgnoreCase(name)
                 .stream()
                 .map(djMapper::mapToDto)

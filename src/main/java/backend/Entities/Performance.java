@@ -28,11 +28,11 @@ public class Performance {
 
     protected Performance() {}
 
-    public Performance(String name, String genre, Set<DJ> dj) {
+    public Performance(Long id, String name, String genre) {
 
+        this.id = id;
         this.name = name;
         this.genre = genre;
-        this.dj = dj;
     }
 
     public Long getId() {

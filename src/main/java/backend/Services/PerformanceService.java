@@ -7,7 +7,7 @@ import backend.Repositories.PerformanceRepository;
 import backend.dtos.PerformanceDTO;
 import backend.dtos.PerformanceMapper;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +26,9 @@ public class PerformanceService {
     }
 
     //SAVE
-    public PerformanceDTO save(Performance performance){
+    public PerformanceDTO save(PerformanceDTO performanceDTO){
+        Performance performance = performanceMapper.mapFromDto(performanceDTO);
+        performance.setDJ(new HashSet<>(djRepository.findAllById(performanceDTO.getDjIDs())));
         return performanceMapper.mapToDto(performanceRepository.save(performance));
     }
 
@@ -37,6 +39,8 @@ public class PerformanceService {
                 .map(performanceMapper::mapToDto)
                 .collect(Collectors.toList());
     }
+
+    //Implement 'findPerformanceDJs' method
 
     //DELETE BY ID
     public void deleteById(Long performanceId){

@@ -18,4 +18,10 @@ public class DjMapper {
 
         return djDto;
     }
+
+    public DJ mapFromDto(DjDTO djDto) {
+        DJ dj = new DJ(djDto.getId(), djDto.getName(), djDto.getGenre());
+
+        return dj;
+    }
 }

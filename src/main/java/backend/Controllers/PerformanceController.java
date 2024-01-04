@@ -19,8 +19,8 @@ public class PerformanceController {
 
     //POST
     @PostMapping("/performances/post")
-    PerformanceDTO create(@RequestBody Performance performance){
-        return performanceService.save(performance);
+    PerformanceDTO create(@RequestBody PerformanceDTO performanceDTO){
+        return performanceService.save(performanceDTO);
     }
 
     //GET
@@ -34,8 +34,8 @@ public class PerformanceController {
 
     //PUT
     @PutMapping("/performances/put")
-    PerformanceDTO update(@Valid @RequestBody Performance performance) {
-        return performanceService.save(performance);
+    PerformanceDTO update(@Valid @RequestBody PerformanceDTO performanceDTO) {
+        return performanceService.save(performanceDTO);
     }
 
     //DELETE

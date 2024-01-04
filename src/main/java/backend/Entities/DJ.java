@@ -21,8 +21,8 @@ public class DJ {
     @ManyToMany(mappedBy = "dj")
     private Set<Performance> performance  = new HashSet<>();
 
-    public DJ(String name, String genre) {
-
+    public DJ(Long id, String name, String genre) {
+        this.id = id;
         this.name = name;
         this.genre = genre;
     }

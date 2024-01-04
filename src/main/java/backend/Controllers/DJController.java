@@ -19,8 +19,8 @@ public class DJController {
 
     //POST
     @PostMapping("/djs/post")
-    DjDTO create(@RequestBody DJ dj){
-        return djService.save(dj);
+    DjDTO create(@RequestBody DjDTO djDto){
+        return djService.save(djDto);
     }
 
     //GET
@@ -34,8 +34,8 @@ public class DJController {
 
     //PUT
     @PutMapping("/djs/put")
-    DjDTO update(@Valid @RequestBody DJ dj) {
-            return djService.save(dj);
+    DjDTO update(@Valid @RequestBody DjDTO djDto) {
+            return djService.save(djDto);
     }
 
     //DELETE
