@@ -1,7 +1,7 @@
 package backend.dtos;
 
-import backend.Entities.DJ;
-import backend.Entities.Performance;
+import backend.entities.DJ;
+import backend.entities.Performance;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;

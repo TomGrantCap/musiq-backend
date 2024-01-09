@@ -1,4 +1,4 @@
-package backend.Entities;
+package backend.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -12,11 +12,8 @@ public class Performance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@NotBlank
     private String name;
 
-
-    //@NotBlank
     private String genre;
 
     @JsonIgnoreProperties("performances")

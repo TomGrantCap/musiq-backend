@@ -1,11 +1,17 @@
 package backend.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class DjDTO {
+
     private Long id;
+
+    @NotBlank(message = "MethodArgumentNotValidException: DJ name cannot be blank.")
     private String name;
+    @NotBlank(message = "MethodArgumentNotValidException Genre cannot be blank.")
     private String genre;
     private Set<Long> performanceIDs;
 

@@ -1,23 +1,19 @@
-package backend.Entities;
+package backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
+//TO DO: ADD VALIDATIONS
 @Entity(name="DJS")
 public class DJ {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @NotBlank
     private String name;
-//    @NotBlank
     private String genre;
 
-    @JsonIgnoreProperties("djs")
     @ManyToMany(mappedBy = "dj")
     private Set<Performance> performance  = new HashSet<>();
 
