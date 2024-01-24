@@ -1,16 +1,15 @@
 package backend.services;
 
-import backend.entities.DJ;
+import backend.entities.Dj;
 import backend.entities.Performance;
-import backend.errorHandler.PerformanceException;
-import backend.repositories.DJRepository;
+import backend.errorHandler.PerformanceServiceException;
+import backend.repositories.DjRepository;
 import backend.repositories.PerformanceRepository;
-import backend.dtos.DjDTO;
+import backend.dtos.DjDto;
 import backend.dtos.DjMapper;
-import backend.dtos.PerformanceDTO;
+import backend.dtos.PerformanceDto;
 import backend.dtos.PerformanceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -25,11 +24,11 @@ public class PerformanceService {
     @Autowired
     WebClient webClient;
     final PerformanceRepository performanceRepository;
-    final DJRepository djRepository;
+    final DjRepository djRepository;
     final PerformanceMapper performanceMapper;
     final DjMapper djMapper;
 
-    public PerformanceService(PerformanceRepository performanceRepository, PerformanceMapper performanceMapper, DjMapper djMapper, DJRepository djRepository) {
+    public PerformanceService(PerformanceRepository performanceRepository, PerformanceMapper performanceMapper, DjMapper djMapper, DjRepository djRepository) {
         this.performanceRepository = performanceRepository;
         this.performanceMapper = performanceMapper;
         this.djMapper = djMapper;
@@ -37,9 +36,9 @@ public class PerformanceService {
     }
 
     //SAVE
-    public PerformanceDTO save(PerformanceDTO performanceDTO){
+    public PerformanceDto save(PerformanceDto performanceDTO){
         Performance performance = performanceMapper.mapFromDto(performanceDTO);
-        performance.setDJ(new HashSet<>(djRepository.findAllById(performanceDTO.getDjIDs())));
+        performance.setDJ(new HashSet<>(djRepository.findAllById(performanceDTO.getDjIds())));
         return performanceMapper.mapToDto(performanceRepository.save(performance));
     }
 
@@ -47,7 +46,7 @@ public class PerformanceService {
     public void deleteById(Long performanceId){
 
         if (findById(performanceId).isPresent()){
-            Set<Long> djIdSet = performanceRepository.findById(performanceId).map(performanceMapper::mapToDto).get().getDjIDs();
+            Set<Long> djIdSet = performanceRepository.findById(performanceId).map(performanceMapper::mapToDto).get().getDjIds();
 
             if (!djIdSet.isEmpty()){
                 RemoveDJPerformances(performanceId, djIdSet);
@@ -61,17 +60,13 @@ public class PerformanceService {
 
             performanceRepository.deleteById(performanceId);
         }
-
-
-        else throw new PerformanceException("No performance found with ID " + performanceId);
-
-
+        else throw new PerformanceServiceException("No performance found with ID " + performanceId);
     }
 
     void RemoveDJPerformances(Long performanceId, Set<Long> djIdSet){
         Performance performance = performanceRepository.findById(performanceId).get();
         for (Long djId : djIdSet){
-            DJ dj = djRepository.findById(djId).get();
+            Dj dj = djRepository.findById(djId).get();
             Set<Performance> performances = dj.getPerformance();
             performances.remove(performance);
             dj.setPerformance(performances);
@@ -81,53 +76,53 @@ public class PerformanceService {
     }
 
     //FIND ALL
-    public Iterable<PerformanceDTO> findAll(){
+    public Iterable<PerformanceDto> findAll(){
         return performanceRepository.findAll()
                 .stream()
                 .map(performanceMapper::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     //FIND BY ID
-    public Optional<PerformanceDTO> findById(Long id){
+    public Optional<PerformanceDto> findById(Long id){
         return performanceRepository.findById(id)
                 .map(performanceMapper::mapToDto);
     }
 
     //FIND PERFORMANCE'S DJS
-    public Iterable<DjDTO> findDJs(Long performanceId){
-        return djRepository.findAllById(this.findById(performanceId).get().getDjIDs())
+    public Iterable<DjDto> findDJs(Long performanceId){
+        return djRepository.findAllById(this.findById(performanceId).get().getDjIds())
                 .stream()
                 .map(djMapper::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     //FIND BY NAME AND/OR GENRE
-    public Iterable<PerformanceDTO> findByNameAndGenre(String name, String genre){
+    public Iterable<PerformanceDto> findByNameAndGenre(String name, String genre){
         return performanceRepository.findByNameContainsIgnoreCaseAndGenreContainsIgnoreCase(name, genre)
                 .stream()
                 .map(performanceMapper::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     //FIND BY NAME MULTIPLE
-    public Iterable<PerformanceDTO> findByName(String name){
+    public Iterable<PerformanceDto> findByName(String name){
         return performanceRepository.findPerformancesByNameContainsIgnoreCase(name)
                 .stream()
                 .map(performanceMapper::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     //FIND BY NAME SINGLE
-    public PerformanceDTO findSinglePerformanceByName(String name){
+    public PerformanceDto findSinglePerformanceByName(String name){
         return performanceMapper.mapToDto(performanceRepository.findPerformanceByNameIgnoreCase(name));
     }
 
     //FIND BY GENRE
-    public Iterable<PerformanceDTO> findByGenre(String genre){
+    public Iterable<PerformanceDto> findByGenre(String genre){
         return performanceRepository.findPerformancesByGenreContainsIgnoreCase(genre)
                 .stream()
                 .map(performanceMapper::mapToDto)
-                .collect(Collectors.toList());
-    }
-}
+                .toList();
+    }}
+

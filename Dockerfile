@@ -18,7 +18,7 @@ RUN mkdir -p /app
 WORKDIR /app
 
 #Copies app to container in /app
-COPY BackendNew/target/BackendNew-0.0.1-SNAPSHOT.jar /app
+COPY BackendNew/target/backendnew.jar /app
 
 #Starts app from location when container is run
-ENTRYPOINT ["java","-jar","BackendNew-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","backendnew.jar"]

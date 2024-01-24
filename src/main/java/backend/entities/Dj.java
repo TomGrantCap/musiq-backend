@@ -6,7 +6,7 @@ import java.util.Set;
 
 //TO DO: ADD VALIDATIONS
 @Entity(name="DJS")
-public class DJ {
+public class Dj {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,13 +17,13 @@ public class DJ {
     @ManyToMany(mappedBy = "dj")
     private Set<Performance> performance  = new HashSet<>();
 
-    public DJ(Long id, String name, String genre) {
+    public Dj(Long id, String name, String genre) {
         this.id = id;
         this.name = name;
         this.genre = genre;
     }
 
-    protected DJ() {
+    protected Dj() {
 
     }
 

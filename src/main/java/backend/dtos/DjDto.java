@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DjDTO {
+public class DjDto {
 
     private Long id;
 
@@ -15,7 +15,7 @@ public class DjDTO {
     private String genre;
     private Set<Long> performanceIDs;
 
-    public DjDTO(Long id, String name, String genre) {
+    public DjDto(Long id, String name, String genre) {
         this.id = id;
         this.name = name;
         this.genre = genre;
@@ -47,11 +47,11 @@ public class DjDTO {
         this.genre = genre;
     }
 
-    public Set<Long> getPerformanceIDs() {
+    public Set<Long> getPerformanceIds() {
         return performanceIDs;
     }
 
-    public void setPerformanceIDs(Set<Long> performanceIDs) {
+    public void setPerformanceIds(Set<Long> performanceIDs) {
         this.performanceIDs = performanceIDs;
     }
 }

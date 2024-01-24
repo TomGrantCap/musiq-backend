@@ -1,24 +1,23 @@
 package backend.dtos;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class PerformanceDTO {
+public class PerformanceDto {
 private Long id;
 @NotBlank(message = "MethodArgumentNotValidException: Performance name cannot be blank.")
 private String name;
 @NotBlank(message = "MethodArgumentNotValidException: Genre cannot be blank.")
 private String genre;
-private Set<Long> djIDs;
+private Set<Long> djIds;
 
-public PerformanceDTO(Long id, String name, String genre) {
+public PerformanceDto(Long id, String name, String genre) {
     this.id = id;
     this.name = name;
     this.genre = genre;
-    djIDs = new HashSet<>();
+    djIds = new HashSet<>();
 }
 
 public Long getId() {
@@ -45,12 +44,12 @@ public void setGenre(String genre) {
     this.genre = genre;
 }
 
-public Set<Long> getDjIDs() {
-    return djIDs;
+public Set<Long> getDjIds() {
+    return djIds;
 }
 
-public void setDj(Set<Long> djIDs) {
-    this.djIDs = djIDs;
+public void setDj(Set<Long> djIds) {
+    this.djIds = djIds;
 }
 
 }
