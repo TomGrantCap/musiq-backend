@@ -1,5 +1,5 @@
 #BUILD AND RUN
-#cd 'C:\Users\tgrant\Documents\SE Track\Backend\BackendNew'
+#cd 'C:\Users\tgrant\Documents\SE Track\Backend'
 #docker-compose up --build
 
 #REMOVE VOLUMES
@@ -10,6 +10,8 @@
 
 version: '2'
 services:
+
+#DJS/PERFORMANCES APP AND DATABASE
 
     backendnewdb:
         container_name: backendnewdb
@@ -29,12 +31,34 @@ services:
     backendnew:
         container_name: backendnew
         build:
-            dockerfile: Dockerfile
+            dockerfile: /BackendNew/Dockerfile
         image: backendnew:latest
         ports:
             - 9090:9090
         networks:
             - tg-network
+
+#REVIEWS APP/DATABASE
+
+    reviewsappdb:
+        container_name: reviewsappdb
+        image: mongo:latest
+        ports:
+        - 27017:27017
+        networks:
+        - tg-network
+
+    reviewsapp:
+        container_name: reviewsapp
+        build:
+            dockerfile: /reviewsapp/Dockerfile
+        image: reviewsapp:latest
+        ports:
+        - 9292:9292
+        links:
+        - reviewsappdb
+        networks:
+        - tg-network
 
 networks:
     tg-network:

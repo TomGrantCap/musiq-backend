@@ -27,13 +27,13 @@ public class DjController {
 
     //POST
     @PostMapping("/djs/post")
-    DjDto create(@Valid @RequestBody DjDto djDto){
+    public DjDto create(@Valid @RequestBody DjDto djDto){
             return djService.save(djDto);
     }
 
     //GET
     @GetMapping("/djs")
-    Iterable<DjDto> read() throws DjServiceException {
+    public Iterable<DjDto> read() throws DjServiceException {
         if (djService.findAll().iterator().hasNext()){
             return djService.findAll();
         }
@@ -42,13 +42,13 @@ public class DjController {
 
     //PUT
     @PutMapping("/djs/put")
-    DjDto update(@Valid @RequestBody DjDto djDto) {
+    public DjDto update(@Valid @RequestBody DjDto djDto) {
             return djService.save(djDto);
     }
 
     //DELETE
     @DeleteMapping("/djs/delete/{id}")
-    void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         if (djService.findById(id).isPresent())
         {
             djService.deleteById(id);
@@ -60,7 +60,7 @@ public class DjController {
 
     //GET BY ID
     @GetMapping("/djs/getbyid/{id}")
-    Optional<DjDto> findByID(@PathVariable Long id) {
+    public Optional<DjDto> findByID(@PathVariable Long id) {
         if (djService.findById(id).isPresent())
         {
             return djService.findById(id);

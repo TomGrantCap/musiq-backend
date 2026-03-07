@@ -1,5 +1,6 @@
 package backend.services;
 
+import backend.config.Config;
 import backend.entities.Dj;
 import backend.entities.Performance;
 import backend.errorHandler.PerformanceServiceException;
@@ -9,30 +10,26 @@ import backend.dtos.DjDto;
 import backend.dtos.DjMapper;
 import backend.dtos.PerformanceDto;
 import backend.dtos.PerformanceMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class PerformanceService {
-
-    @Autowired
-    WebClient webClient;
+    Config config;
     final PerformanceRepository performanceRepository;
     final DjRepository djRepository;
     final PerformanceMapper performanceMapper;
     final DjMapper djMapper;
 
-    public PerformanceService(PerformanceRepository performanceRepository, PerformanceMapper performanceMapper, DjMapper djMapper, DjRepository djRepository) {
+    public PerformanceService(PerformanceRepository performanceRepository, PerformanceMapper performanceMapper, DjMapper djMapper, DjRepository djRepository, Config config) {
         this.performanceRepository = performanceRepository;
         this.performanceMapper = performanceMapper;
         this.djMapper = djMapper;
         this.djRepository = djRepository;
+        this.config = config;
     }
 
     //SAVE
@@ -49,10 +46,10 @@ public class PerformanceService {
             Set<Long> djIdSet = performanceRepository.findById(performanceId).map(performanceMapper::mapToDto).get().getDjIds();
 
             if (!djIdSet.isEmpty()){
-                RemoveDJPerformances(performanceId, djIdSet);
+                removeDJPerformances(performanceId, djIdSet);
             }
 
-            webClient.delete()
+            config.webClient().delete()
                     .uri("/reviews/deletebyperformanceid/" + performanceId)
                     .retrieve()
                     .toBodilessEntity()
@@ -63,7 +60,7 @@ public class PerformanceService {
         else throw new PerformanceServiceException("No performance found with ID " + performanceId);
     }
 
-    void RemoveDJPerformances(Long performanceId, Set<Long> djIdSet){
+    void removeDJPerformances(Long performanceId, Set<Long> djIdSet){
         Performance performance = performanceRepository.findById(performanceId).get();
         for (Long djId : djIdSet){
             Dj dj = djRepository.findById(djId).get();

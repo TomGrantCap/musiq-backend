@@ -36,6 +36,7 @@ public class DjService {
 
     //DELETE BY ID
     public void deleteById(Long djId) {
+
         Set<Long> performanceIdSet = djRepository.findById(djId).map(djMapper::mapToDto).get().getPerformanceIds();
         if (performanceIdSet.isEmpty()) {
             djRepository.deleteById(djId);
